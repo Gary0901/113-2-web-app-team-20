@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>手搖飲料專賣店</title>
+    <!-- 連結外部CSS檔案 -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <!-- 導航區 -->
@@ -48,7 +50,7 @@
         </ol>
         
         <h3>價格表</h3>
-        <table border="1">
+        <table>
             <tr>
                 <th>杯型</th>
                 <th>中杯</th>
@@ -78,19 +80,17 @@
     <section id="order">
         <h2>線上訂購</h2>
         <form>
-            <div>
+            <div class="form-group">
                 <label for="name">姓名：</label>
                 <input type="text" id="name" name="name">
             </div>
-            <br>
             
-            <div>
+            <div class="form-group">
                 <label for="phone">電話：</label>
                 <input type="tel" id="phone" name="phone">
             </div>
-            <br>
             
-            <div>
+            <div class="form-group">
                 <label for="drink">選擇飲品：</label>
                 <select id="drink" name="drink">
                     <option value="bubble-tea">珍珠奶茶</option>
@@ -101,36 +101,52 @@
                     <option value="lemon-winter-melon">檸檬冬瓜茶</option>
                 </select>
             </div>
-            <br>
             
-            <div>
+            <div class="form-group">
                 <label>杯型：</label>
-                <input type="radio" id="medium" name="size" value="medium">
-                <label for="medium">中杯</label>
-                <input type="radio" id="large" name="size" value="large">
-                <label for="large">大杯</label>
+                <div class="inline-options">
+                    <div class="option">
+                        <input type="radio" id="medium" name="size" value="medium">
+                        <label for="medium">中杯</label>
+                    </div>
+                    <div class="option">
+                        <input type="radio" id="large" name="size" value="large">
+                        <label for="large">大杯</label>
+                    </div>
+                </div>
             </div>
-            <br>
             
-            <div>
+            <div class="form-group">
                 <label>配料：</label>
-                <input type="checkbox" id="pearl" name="toppings" value="pearl">
-                <label for="pearl">珍珠</label>
-                <input type="checkbox" id="pudding" name="toppings" value="pudding">
-                <label for="pudding">布丁</label>
-                <input type="checkbox" id="grass-jelly" name="toppings" value="grass-jelly">
-                <label for="grass-jelly">仙草</label>
+                <div class="inline-options">
+                    <div class="option">
+                        <input type="checkbox" id="pearl" name="toppings" value="pearl">
+                        <label for="pearl">珍珠</label>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="pudding" name="toppings" value="pudding">
+                        <label for="pudding">布丁</label>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="grass-jelly" name="toppings" value="grass-jelly">
+                        <label for="grass-jelly">仙草</label>
+                    </div>
+                    <div class="option">
+                        <input type="checkbox" id="grass-tea-jelly" name="toppings" value="grass-jelly">
+                        <label for="grass-jelly">茶凍</label>
+                    </div>
+                </div>
             </div>
-            <br>
             
-            <div>
+            <div class="form-group">
                 <label for="notes">備註：</label>
                 <textarea id="notes" name="notes" rows="3" cols="30"></textarea>
             </div>
-            <br>
             
-            <button type="submit">送出訂單</button>
-            <button type="reset">重設</button>
+            <div class="button-group">
+                <button type="submit" class="btn-submit">送出訂單</button>
+                <button type="reset" class="btn-reset">重設</button>
+            </div>
         </form>
     </section>
     
@@ -148,7 +164,6 @@
     
     <!-- 頁腳信息 -->
     <footer>
-        <hr>
         <p>© 2025 茶香飲品 版權所有</p>
         <p>營業時間：週一至週日 10:00-22:00</p>
     </footer>
