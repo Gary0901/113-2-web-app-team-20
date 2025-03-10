@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手搖飲料專賣店</title>
+</head>
+<body>
+    <!-- 導航區 -->
+    <nav>
+        <a href="#about">關於我們</a> |
+        <a href="#menu">飲品菜單</a> |
+        <a href="#order">線上訂購</a> |
+        <a href="#contact">聯絡資訊</a>
+    </nav>
+    
+    <!-- 網頁標題 -->
+    <header>
+        <h1>茶香飲品</h1>
+        <p>新鮮現泡 · 天然食材 · 用心製作</p>
+    </header>
+    
+    <!-- 關於我們 -->
+    <section id="about">
+        <h2>關於我們的飲品</h2>
+        <p>茶香飲品堅持使用<strong>新鮮水果</strong>、<strong>優質茶葉</strong>和<strong>天然配料</strong>，為您製作最道地的台灣手搖飲料。</p>
+        <img src="/api/placeholder/300/200" alt="茶香飲品店面">
+    </section>
+    
+    <hr>
+    
+    <!-- 飲品菜單 -->
+    <section id="menu">
+        <h2>飲品菜單</h2>
+        
+        <h3>人氣茶飲</h3>
+        <ul>
+            <li><strong>珍珠奶茶</strong> - 經典台灣風味，香濃奶茶搭配QQ珍珠 <em>NT$ 60</em></li>
+            <li><strong>芒果綠茶</strong> - 新鮮芒果果肉，搭配甘甜綠茶 <em>NT$ 75</em></li>
+            <li><strong>鮮奶茶</strong> - 使用高品質鮮奶，香醇茶香完美結合 <em>NT$ 65</em></li>
+        </ul>
+        
+        <h3>特調飲品</h3>
+        <ol>
+            <li><strong>繽紛水果茶</strong> - 多種新鮮水果，清爽的水果茶基底 <em>NT$ 85</em></li>
+            <li><strong>抹茶拿鐵</strong> - 日本進口抹茶粉，搭配濃郁鮮奶 <em>NT$ 80</em></li>
+            <li><strong>檸檬冬瓜茶</strong> - 清甜冬瓜茶加上新鮮檸檬片 <em>NT$ 70</em></li>
+        </ol>
+        
+        <h3>價格表</h3>
+        <table border="1">
+            <tr>
+                <th>杯型</th>
+                <th>中杯</th>
+                <th>大杯</th>
+            </tr>
+            <tr>
+                <td>基本茶飲</td>
+                <td>NT$ 50</td>
+                <td>NT$ 60</td>
+            </tr>
+            <tr>
+                <td>鮮奶茶系列</td>
+                <td>NT$ 65</td>
+                <td>NT$ 75</td>
+            </tr>
+            <tr>
+                <td>水果茶系列</td>
+                <td>NT$ 70</td>
+                <td>NT$ 85</td>
+            </tr>
+        </table>
+    </section>
+    
+    <hr>
+    
+    <!-- 訂購表單 -->
+    <section id="order">
+        <h2>線上訂購</h2>
+        <form>
+            <div>
+                <label for="name">姓名：</label>
+                <input type="text" id="name" name="name">
+            </div>
+            <br>
+            
+            <div>
+                <label for="phone">電話：</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+            <br>
+            
+            <div>
+                <label for="drink">選擇飲品：</label>
+                <select id="drink" name="drink">
+                    <option value="bubble-tea">珍珠奶茶</option>
+                    <option value="mango-green-tea">芒果綠茶</option>
+                    <option value="milk-tea">鮮奶茶</option>
+                    <option value="fruit-tea">繽紛水果茶</option>
+                    <option value="matcha-latte">抹茶拿鐵</option>
+                    <option value="lemon-winter-melon">檸檬冬瓜茶</option>
+                </select>
+            </div>
+            <br>
+            
+            <div>
+                <label>杯型：</label>
+                <input type="radio" id="medium" name="size" value="medium">
+                <label for="medium">中杯</label>
+                <input type="radio" id="large" name="size" value="large">
+                <label for="large">大杯</label>
+            </div>
+            <br>
+            
+            <div>
+                <label>配料：</label>
+                <input type="checkbox" id="pearl" name="toppings" value="pearl">
+                <label for="pearl">珍珠</label>
+                <input type="checkbox" id="pudding" name="toppings" value="pudding">
+                <label for="pudding">布丁</label>
+                <input type="checkbox" id="grass-jelly" name="toppings" value="grass-jelly">
+                <label for="grass-jelly">仙草</label>
+            </div>
+            <br>
+            
+            <div>
+                <label for="notes">備註：</label>
+                <textarea id="notes" name="notes" rows="3" cols="30"></textarea>
+            </div>
+            <br>
+            
+            <button type="submit">送出訂單</button>
+            <button type="reset">重設</button>
+        </form>
+    </section>
+    
+    <hr>
+    
+    <!-- 聯絡資訊 -->
+    <section id="contact">
+        <h2>聯絡我們</h2>
+        <address>
+            <p>地址：台北市信義區信義路五段100號</p>
+            <p>電話：<a href="tel:02-1234-5678">02-1234-5678</a></p>
+            <p>Email：<a href="mailto:info@chaxiang.com">info@chaxiang.com</a></p>
+        </address>
+    </section>
+    
+    <!-- 頁腳信息 -->
+    <footer>
+        <hr>
+        <p>© 2025 茶香飲品 版權所有</p>
+        <p>營業時間：週一至週日 10:00-22:00</p>
+    </footer>
+</body>
+</html>
