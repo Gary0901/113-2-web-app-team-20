@@ -16,6 +16,36 @@
         <a href="#contact">聯絡資訊</a>
     </nav>
     
+    <!-- Banner 輪播 -->
+    <div class="banner-container">
+        <img id="banner-image" class="banner-image" src="picture/drink1.jpg" alt="茶香飲品">
+        <div id="banner-title" class="banner-title">春季新品上市</div>
+    </div>
+    
+    <!-- 倒數計時區 -->
+    <div class="countdown-container">
+        <h3 class="countdown-title">茶香飲品周年慶倒數</h3>
+        <div class="countdown-timer">
+            <div class="countdown-box">
+                <div id="countdown-days" class="countdown-number">00</div>
+                <div class="countdown-label">天</div>
+            </div>
+            <div class="countdown-box">
+                <div id="countdown-hours" class="countdown-number">00</div>
+                <div class="countdown-label">時</div>
+            </div>
+            <div class="countdown-box">
+                <div id="countdown-minutes" class="countdown-number">00</div>
+                <div class="countdown-label">分</div>
+            </div>
+            <div class="countdown-box">
+                <div id="countdown-seconds" class="countdown-number">00</div>
+                <div class="countdown-label">秒</div>
+            </div>
+        </div>
+        <p id="countdown-message" class="countdown-message">活動即將開始，敬請期待！</p>
+    </div>
+
     <!-- 網頁標題 -->
     <header>
         <h1>茶香飲品</h1>
@@ -26,28 +56,71 @@
     <section id="about">
         <h2>關於我們的飲品</h2>
         <p>茶香飲品堅持使用<strong>新鮮水果</strong>、<strong>優質茶葉</strong>和<strong>天然配料</strong>，為您製作最道地的台灣手搖飲料。</p>
-        <img src="/api/placeholder/300/200" alt="茶香飲品店面">
+        <img src="./picture//shop.jpg" alt="茶香飲品店面">
     </section>
     
     <hr>
     
     <!-- 飲品菜單 -->
+    <!-- 飲品菜單 -->
     <section id="menu">
         <h2>飲品菜單</h2>
         
         <h3>人氣茶飲</h3>
-        <ul>
-            <li><strong>珍珠奶茶</strong> - 經典台灣風味，香濃奶茶搭配QQ珍珠 <em>NT$ 60</em></li>
-            <li><strong>芒果綠茶</strong> - 新鮮芒果果肉，搭配甘甜綠茶 <em>NT$ 75</em></li>
-            <li><strong>鮮奶茶</strong> - 使用高品質鮮奶，香醇茶香完美結合 <em>NT$ 65</em></li>
-        </ul>
+        <div class="drink-gallery">
+            <div class="drink-item">
+                <img src="picture/bubble.jpg" alt="珍珠奶茶">
+                <div class="drink-overlay">
+                    <h4>珍珠奶茶</h4>
+                    <p>經典台灣風味，香濃奶茶搭配QQ珍珠</p>
+                    <p class="price">NT$ 60</p>
+                </div>
+            </div>
+            <div class="drink-item">
+                <img src="picture/mango.jpg" alt="芒果綠茶">
+                <div class="drink-overlay">
+                    <h4>芒果綠茶</h4>
+                    <p>新鮮芒果果肉，搭配甘甜綠茶</p>
+                    <p class="price">NT$ 75</p>
+                </div>
+            </div>
+            <div class="drink-item">
+                <img src="picture/milktea.jpg" alt="鮮奶茶">
+                <div class="drink-overlay">
+                    <h4>鮮奶茶</h4>
+                    <p>使用高品質鮮奶，香醇茶香完美結合</p>
+                    <p class="price">NT$ 65</p>
+                </div>
+            </div>
+        </div>
         
         <h3>特調飲品</h3>
-        <ol>
-            <li><strong>繽紛水果茶</strong> - 多種新鮮水果，清爽的水果茶基底 <em>NT$ 85</em></li>
-            <li><strong>抹茶拿鐵</strong> - 日本進口抹茶粉，搭配濃郁鮮奶 <em>NT$ 80</em></li>
-            <li><strong>檸檬冬瓜茶</strong> - 清甜冬瓜茶加上新鮮檸檬片 <em>NT$ 70</em></li>
-        </ol>
+        <div class="drink-gallery">
+            <div class="drink-item">
+                <img src="picture/fruit.jpg" alt="繽紛水果茶">
+                <div class="drink-overlay">
+                    <h4>繽紛水果茶</h4>
+                    <p>多種新鮮水果，清爽的水果茶基底</p>
+                    <p class="price">NT$ 85</p>
+                </div>
+            </div>
+            <div class="drink-item">
+                <img src="picture/mocha.jpg" alt="抹茶拿鐵">
+                <div class="drink-overlay">
+                    <h4>抹茶拿鐵</h4>
+                    <p>日本進口抹茶粉，搭配濃郁鮮奶</p>
+                    <p class="price">NT$ 80</p>
+                </div>
+            </div>
+            <div class="drink-item">
+                <img src="picture/lemontea.jpg" alt="檸檬冬瓜茶">
+                <div class="drink-overlay">
+                    <h4>檸檬冬瓜茶</h4>
+                    <p>清甜冬瓜茶加上新鮮檸檬片</p>
+                    <p class="price">NT$ 70</p>
+                </div>
+            </div>
+        </div>
         
         <h3>價格表</h3>
         <table>
@@ -77,17 +150,20 @@
     <hr>
     
     <!-- 訂購表單 -->
+    <!-- 訂購表單 -->
     <section id="order">
         <h2>線上訂購</h2>
-        <form>
+        <form onsubmit="return validateOrderForm(this);">
             <div class="form-group">
                 <label for="name">姓名：</label>
                 <input type="text" id="name" name="name">
+                <div class="error-message">請輸入您的姓名</div>
             </div>
             
             <div class="form-group">
                 <label for="phone">電話：</label>
-                <input type="tel" id="phone" name="phone">
+                <input type="tel" id="phone" name="phone" placeholder="例如：0912345678">
+                <div class="error-message">請輸入有效的電話號碼</div>
             </div>
             
             <div class="form-group">
@@ -114,6 +190,7 @@
                         <label for="large">大杯</label>
                     </div>
                 </div>
+                <div class="error-message">請選擇杯型</div>
             </div>
             
             <div class="form-group">
@@ -132,8 +209,8 @@
                         <label for="grass-jelly">仙草</label>
                     </div>
                     <div class="option">
-                        <input type="checkbox" id="grass-tea-jelly" name="toppings" value="grass-jelly">
-                        <label for="grass-jelly">茶凍</label>
+                        <input type="checkbox" id="tea-jelly" name="toppings" value="tea-jelly">
+                        <label for="tea-jelly">茶凍</label>
                     </div>
                 </div>
             </div>
@@ -168,4 +245,7 @@
         <p>營業時間：週一至週日 10:00-22:00</p>
     </footer>
 </body>
+<script src="form-validation.js"></script>
+<script src="banner-countdown.js"></script>
+<script src="drink_menu.js"></script>
 </html>
