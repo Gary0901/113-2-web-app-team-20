@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from .models import Order  # 導入訂單模型
 import datetime
 
 def home(request):
@@ -15,8 +16,16 @@ def home(request):
         toppings = request.POST.getlist('toppings', [])
         notes = request.POST.get('notes', '')
         
-        # 在實際應用中，這裡可以將數據保存到數據庫
-        # 例如：Order.objects.create(name=name, phone=phone, ...)
+        # 將數據保存到數據庫
+        toppings_str = ','.join(toppings) if toppings else ''
+        Order.objects.create(
+            name=name, 
+            phone=phone, 
+            drink=drink, 
+            size=size, 
+            toppings=toppings_str, 
+            notes=notes
+        )
         
         # 添加成功消息
         messages.success(request, '訂單已成功提交！我們會盡快處理您的訂單。')
