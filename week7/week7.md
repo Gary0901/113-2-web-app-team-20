@@ -46,9 +46,9 @@ Week07 作業報告 - Team 20
 
 ✅ Docker連結及啟動方式說明
 
-執行以下指令之後進入:http://localhost:8000 即可\n
-docker pull howard891016/my-django-app:latest\n
-docker run -p 8000:8000 howard891016/my-django-app:latest\n
+執行以下指令之後進入:http://localhost:8000 即可/n
+docker pull howard891016/my-django-app:latest/n
+docker run -p 8000:8000 howard891016/my-django-app:latest/n
 
 ❗ 關於進階功能的考量
 本週我們優先完成了 Django 基礎架構的轉換，包含模板系統、靜態資源管理與基本表單處理。針對資料模型 (Models) 和管理介面 (Admin) 等進階功能，我們已經了解其實作方法，但決定在網站穩定運行後，再逐步加入這些功能，以確保專案的穩定發展。
