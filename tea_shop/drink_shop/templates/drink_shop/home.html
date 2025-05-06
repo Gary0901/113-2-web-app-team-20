@@ -1,11 +1,16 @@
+<!-- drink_shop/templates/drink_shop/home.html -->
 {% extends 'drink_shop/base.html' %}
 {% load static %}
+
+{% block title %}首頁 - 茶香飲品{% endblock %}
+
 {% block content %}
 <!-- Banner 輪播 -->
 <div class="banner-container">
-<img id="banner-image" class="banner-image" src="{% static 'drink_shop/images/drink1.jpg' %}" alt="茶香飲品">
-<div id="banner-title" class="banner-title">{{ banner_titles.0 }}</div>
+    <img id="banner-image" class="banner-image" src="{% static 'drink_shop/images/drink1.jpg' %}" alt="茶香飲品">
+    <div id="banner-title" class="banner-title">{{ banner_titles.0 }}</div>
 </div>
+
 <!-- 倒數計時區 -->
 <div class="countdown-container">
     <h3 class="countdown-title">茶香飲品周年慶倒數</h3>
@@ -30,12 +35,6 @@
     <p id="countdown-message" class="countdown-message">{{ countdown_message }}</p>
 </div>
 
-<!-- 網頁標題 -->
-<header>
-    <h1>茶香飲品</h1>
-    <p>新鮮現泡 · 天然食材 · 用心製作</p>
-</header>
-
 <!-- 關於我們 -->
 <section id="about">
     <h2>關於我們的飲品</h2>
@@ -43,28 +42,31 @@
     <img src="{% static 'drink_shop/images/shop.jpg' %}" alt="茶香飲品店面">
 </section>
 
-<hr>
-
 <!-- 飲品菜單 -->
 <section id="menu">
     <h2>飲品菜單</h2>
     
     {% for category in menu_items %}
-    <h3>{{ category.category }}</h3>
+    <h3>
+        <a href="{% url 'drink_shop:category_detail' category.category %}">{{ category.category }}</a>
+    </h3>
     <div class="drink-gallery">
         {% for drink in category.items %}
         <div class="drink-item">
-            <img src="{% static 'drink_shop/images/'|add:drink.image %}" alt="{{ drink.name }}">
-            <div class="drink-overlay">
-                <h4>{{ drink.name }}</h4>
-                <p>{{ drink.description }}</p>
-                <p class="price">NT$ {{ drink.price }}</p>
-            </div>
+            <a href="{% url 'drink_shop:drink_detail' drink.id %}">
+                <img src="{% static 'drink_shop/images/'|add:drink.image %}" alt="{{ drink.name }}">
+                <div class="drink-overlay">
+                    <h4>{{ drink.name }}</h4>
+                    <p>{{ drink.description }}</p>
+                    <p class="price">NT$ {{ drink.price }}</p>
+                </div>
+            </a>
         </div>
         {% endfor %}
     </div>
     {% endfor %}
     
+    <!-- 價格表 -->
     <h3>價格表</h3>
     <table>
         <tr>
@@ -84,81 +86,56 @@
 
 <hr>
 
-<!-- 訂購表單 -->
+<!-- 訂購表單（簡化版） -->
 <section id="order">
     <h2>線上訂購</h2>
     <form method="post" id="orderForm">
         {% csrf_token %}
         <div class="form-group">
             <label for="name">姓名：</label>
-            <input type="text" id="name" name="name">
-            <div class="error-message">請輸入您的姓名</div>
+            <input type="text" id="name" name="name" required>
         </div>
         
         <div class="form-group">
             <label for="phone">電話：</label>
-            <input type="tel" id="phone" name="phone" placeholder="例如：0912345678">
-            <div class="error-message">請輸入有效的電話號碼</div>
+            <input type="tel" id="phone" name="phone" required>
         </div>
         
         <div class="form-group">
             <label for="drink">選擇飲品：</label>
             <select id="drink" name="drink">
-                <option value="bubble-tea">珍珠奶茶</option>
-                <option value="mango-green-tea">芒果綠茶</option>
-                <option value="milk-tea">鮮奶茶</option>
-                <option value="fruit-tea">繽紛水果茶</option>
-                <option value="matcha-latte">抹茶拿鐵</option>
-                <option value="lemon-winter-melon">檸檬冬瓜茶</option>
+                {% for category in menu_items %}
+                    {% for drink in category.items %}
+                        <option value="{{ drink.id }}">{{ drink.name }} - NT$ {{ drink.price }}</option>
+                    {% endfor %}
+                {% endfor %}
             </select>
         </div>
         
         <div class="form-group">
             <label>杯型：</label>
             <div class="inline-options">
-                <div class="option">
-                    <input type="radio" id="medium" name="size" value="medium">
-                    <label for="medium">中杯</label>
-                </div>
-                <div class="option">
-                    <input type="radio" id="large" name="size" value="large">
-                    <label for="large">大杯</label>
-                </div>
+                <label><input type="radio" name="size" value="medium" required> 中杯</label>
+                <label><input type="radio" name="size" value="large"> 大杯 (+$10)</label>
             </div>
-            <div class="error-message">請選擇杯型</div>
         </div>
         
         <div class="form-group">
             <label>配料：</label>
             <div class="inline-options">
-                <div class="option">
-                    <input type="checkbox" id="pearl" name="toppings" value="pearl">
-                    <label for="pearl">珍珠</label>
-                </div>
-                <div class="option">
-                    <input type="checkbox" id="pudding" name="toppings" value="pudding">
-                    <label for="pudding">布丁</label>
-                </div>
-                <div class="option">
-                    <input type="checkbox" id="grass-jelly" name="toppings" value="grass-jelly">
-                    <label for="grass-jelly">仙草</label>
-                </div>
-                <div class="option">
-                    <input type="checkbox" id="tea-jelly" name="toppings" value="tea-jelly">
-                    <label for="tea-jelly">茶凍</label>
-                </div>
+                <label><input type="checkbox" name="toppings" value="pearl"> 珍珠</label>
+                <label><input type="checkbox" name="toppings" value="pudding"> 布丁</label>
+                <label><input type="checkbox" name="toppings" value="grass-jelly"> 仙草</label>
+                <label><input type="checkbox" name="toppings" value="tea-jelly"> 茶凍</label>
             </div>
         </div>
         
         <div class="form-group">
             <label for="notes">備註：</label>
-            <textarea id="notes" name="notes" rows="3" cols="30"></textarea>
+            <textarea id="notes" name="notes"></textarea>
         </div>
         
-        <div class="button-group">
-            <button type="submit" class="btn-submit">送出訂單</button>
-            <button type="reset" class="btn-reset">重設</button>
-        </div>
+        <button type="submit" class="btn-submit">送出訂單</button>
     </form>
 </section>
 
@@ -174,6 +151,7 @@
     </address>
 </section>
 {% endblock %}
+
 {% block extra_js %}
 <script src="{% static 'drink_shop/js/banner-countdown.js' %}"></script>
 <script src="{% static 'drink_shop/js/drink_menu.js' %}"></script>

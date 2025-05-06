@@ -1,12 +1,28 @@
+<!-- drink_shop/templates/drink_shop/base.html -->
 {% load static %}
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}手搖飲料專賣店{% endblock %}</title>
-    <!-- 連結外部CSS檔案 -->
+    <title>{% block title %}茶香飲品{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'drink_shop/css/style.css' %}">
+    <style>
+        .shop-status {
+            margin-left: 20px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .shop-status.open {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .shop-status.closed {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -16,26 +32,31 @@
         <a href="#menu">飲品菜單</a> |
         <a href="#order">線上訂購</a> |
         <a href="#contact">聯絡資訊</a>
+        {% if is_open %}
+            <span class="shop-status open">營業中</span>
+        {% else %}
+            <span class="shop-status closed">休息中</span>
+        {% endif %}
     </nav>
-    <!-- 系統訊息 -->
-    {% if messages %}
-    <div class="messages">
-        {% for message in messages %}
-        <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">
-            {{ message }}
-        </div>
-        {% endfor %}
-    </div>
-    {% endif %}
-{% block content %}
-{% endblock %}
-
-<!-- 頁腳信息 -->
-<footer>
-    <p>© {% now "Y" %} 茶香飲品 版權所有</p>
-    <p>營業時間：週一至週日 10:00-22:00</p>
-</footer>
-
-{% block extra_js %}{% endblock %}
+    
+    <!-- 頁首 -->
+    {% block header %}
+    <header>
+        <h1>茶香飲品</h1>
+        <p>新鮮現泡 · 天然食材 · 用心製作</p>
+    </header>
+    {% endblock %}
+    
+    <!-- 主要內容 -->
+    {% block content %}
+    {% endblock %}
+    
+    <!-- 頁腳 -->
+    <footer>
+        <p>© {% now "Y" %} 茶香飲品 版權所有</p>
+        <p>營業時間：週一至週日 10:00-22:00</p>
+    </footer>
+    
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

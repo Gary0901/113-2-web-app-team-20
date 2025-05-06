@@ -1,0 +1,87 @@
+<!-- drink_shop/templates/drink_shop/order_status.html -->
+{% extends 'drink_shop/base.html' %}
+{% load static %}
+
+{% block title %}訂單狀態 - 茶香飲品{% endblock %}
+
+{% block content %}
+<div class="order-status-container">
+    <header class="order-header">
+        <h1>訂單狀態查詢</h1>
+        <p>您的訂單詳情</p>
+    </header>
+    
+    <div class="order-details">
+        <div class="order-info">
+            <h2>訂單編號：{{ order.id }}</h2>
+            <p class="order-time">下單時間：{{ order.created_at|date:"Y年m月d日 H:i:s" }}</p>
+        </div>
+        
+        <div class="customer-info">
+            <h3>客戶資訊</h3>
+            <p><strong>姓名：</strong>{{ order.name }}</p>
+            <p><strong>電話：</strong>{{ order.phone }}</p>
+        </div>
+        
+        <div class="order-items">
+            <h3>訂購內容</h3>
+            <table class="order-table">
+                <tr>
+                    <td><strong>飲品：</strong></td>
+                    <td>{{ order.get_drink_display }}</td>
+                </tr>
+                <tr>
+                    <td><strong>杯型：</strong></td>
+                    <td>{{ order.get_size_display }}</td>
+                </tr>
+                <tr>
+                    <td><strong>配料：</strong></td>
+                    <td>
+                        {% if order.toppings %}
+                            {{ order.toppings }}
+                        {% else %}
+                            無配料
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if order.notes %}
+                <tr>
+                    <td><strong>備註：</strong></td>
+                    <td>{{ order.notes|truncatechars:50 }}</td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>
+        
+        <div class="order-price">
+            <h3>價格明細</h3>
+            <p>基本價格：NT$ {{ order.base_price|floatformat:0 }}</p>
+            {% if order.size == 'large' %}
+                <p>大杯加價：NT$ 10</p>
+            {% endif %}
+            <p><strong>總計：NT$ {{ order.total_price|floatformat:0 }}</strong></p>
+        </div>
+        
+        <div class="order-status-badge">
+            <span class="status-label">訂單狀態：</span>
+            <span class="status-value
+                {% if order.status == 'completed' %}
+                    status-completed
+                {% elif order.status == 'preparing' %}
+                    status-preparing
+                {% elif order.status == 'ready' %}
+                    status-ready
+                {% else %}
+                    status-pending
+                {% endif %}">
+                {{ order.get_status_display }}
+            </span>
+        </div>
+    </div>
+    
+    <div class="order-actions">
+        <a href="{% url 'drink_shop:home' %}" class="btn-submit">繼續購物</a>
+        <a href="{% url 'drink_shop:menu' %}" class="btn-reset">查看菜單</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'drink_shop/base.html' %}
+{% load static %}
+
+{% block content %}
+<header>
+    <h1>{{ category }}</h1>
+    <p>精選 {{ category }} 系列飲品</p>
+</header>
+
+<nav class="breadcrumb">
+    <a href="{% url 'drink_shop:home' %}">首頁</a> > 
+    <a href="{% url 'drink_shop:menu' %}">菜單</a> > 
+    <span>{{ category }}</span>
+</nav>
+
+<section class="category-section">
+    <div class="drink-gallery">
+        {% for drink in drinks %}
+        <div class="drink-item">
+            <a href="{% url 'drink_shop:drink_detail' drink.id %}">
+                <img src="{% static 'drink_shop/images/'|add:drink.image %}" alt="{{ drink.name }}">
+                <div class="drink-overlay">
+                    <h4>{{ drink.name }}</h4>
+                    <p>{{ drink.description }}</p>
+                    <p class="price">NT$ {{ drink.price }}</p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="menu-actions">
+        <a href="{% url 'drink_shop:home' %}#order" class="btn-submit">立即訂購</a>
+        <a href="{% url 'drink_shop:menu' %}" class="btn-reset">回到完整菜單</a>
+    </div>
+</section>
+{% endblock %}

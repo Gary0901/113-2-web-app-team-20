@@ -1,0 +1,71 @@
+{% extends 'drink_shop/base.html' %}
+{% load static %}
+
+{% block content %}
+<nav class="breadcrumb">
+    <a href="{% url 'drink_shop:home' %}">首頁</a> > 
+    <a href="{% url 'drink_shop:menu' %}">菜單</a> > 
+    <span>{{ drink.name }}</span>
+</nav>
+
+<div class="drink-detail-container">
+    <div class="drink-image-section">
+        <img src="{% static 'drink_shop/images/'|add:drink.image %}" alt="{{ drink.name }}" class="main-image">
+    </div>
+    <div class="drink-info-section">
+        <h1>{{ drink.name }}</h1>
+        <p class="description">{{ drink.description }}</p>
+        <p class="price-tag">NT$ {{ drink.price }}</p>
+        
+        <div class="order-form">
+            <h3>立即訂購</h3>
+            <form method="post" action="{% url 'drink_shop:home' %}#order">
+                {% csrf_token %}
+                <input type="hidden" name="drink" value="{{ drink.id }}">
+                
+                <div class="form-group">
+                    <label for="name">姓名：</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">電話：</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>杯型：</label>
+                    <div class="inline-options">
+                        <label><input type="radio" name="size" value="medium" required> 中杯</label>
+                        <label><input type="radio" name="size" value="large"> 大杯</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>配料：</label>
+                    <div class="inline-options">
+                        <label><input type="checkbox" name="toppings" value="pearl"> 珍珠</label>
+                        <label><input type="checkbox" name="toppings" value="pudding"> 布丁</label>
+                        <label><input type="checkbox" name="toppings" value="grass-jelly"> 仙草</label>
+                        <label><input type="checkbox" name="toppings" value="tea-jelly"> 茶凍</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">備註：</label>
+                    <textarea id="notes" name="notes"></textarea>
+                </div>
+                
+                <button type="submit" class="btn-submit">加入訂單</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="related-drinks">
+    <h2>其他推薦飲品</h2>
+    <div class="drink-gallery">
+        <!-- 這裡可以加入其他推薦飲品 -->
+    </div>
+</div>
+{% endblock %}
