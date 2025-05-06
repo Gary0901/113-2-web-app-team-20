@@ -28,7 +28,6 @@
 ### ✅ 重構茶店網站的 URL 架構
 - 將飲品分類設計為動態路由：`/drinks/<category>/`
 - 為每種飲品建立專屬頁面：`/drink/<drink_id>/`
-- 實現訂單查詢系統：`/order/<order_id>/`
 
 ### ✅ 實作 URL namespace 管理
 ```python
@@ -44,7 +43,6 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('drinks/<str:category>/', views.category_detail, name='category_detail'),
     path('drink/<str:drink_id>/', views.drink_detail, name='drink_detail'),
-    path('order/<uuid:order_id>/', views.order_status, name='order_status'),
 ]
 
 優化使用者體驗
@@ -67,9 +65,3 @@ urlpatterns = [
 
 顯示特定分類的飲品
 提供返回完整菜單的功能
-
-
-訂單狀態查詢 (/order/<order_id>/)
-
-顯示訂單詳細資訊
-包含客戶資料與訂購內容
