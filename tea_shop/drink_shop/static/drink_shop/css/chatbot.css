@@ -1,4 +1,30 @@
 /* 聊天視窗容器 */
+
+/* chatbot-specific.css */
+#chat-window .message {
+    /* 聊天訊息的特定樣式 */
+    max-width: 80%;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+#chat-window .bot-message {
+    background: #f1f0f0;
+    color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+}
+
+#chat-window .user-message {
+    background: #DFFFDF;
+    color: #333;
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+}
+
 .chat-widget {
     position: fixed;
     bottom: 20px;

@@ -14,7 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 連接事件處理
     socket.on('connect', () => {
         console.log('Connected to server');
+        chatWindow.classList.add('active'); // 確保視窗可見
     });
+
+    console.log("成功連接伺服器")
     
     // 打開聊天視窗
     chatIcon.addEventListener('click', () => {
@@ -30,7 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // 發送消息
     function sendMessage() {
         const message = messageInput.value.trim();
+        console.log("成功發送消息");
+        console.log(message);
         if (message) {
+            console.log("success")
+
             // 添加用戶消息
             addMessage(message, 'user-message');
             
@@ -62,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!currentResponseDiv) {
             // 創建新的回應div
             currentResponseDiv = document.createElement('div');
-            currentResponseDiv.className = 'message bot-message';
+            currentResponseDiv.className = 'chat-message bot-message';
             currentResponseDiv.textContent = '';
             
             // 在打字指示器前插入
@@ -71,9 +78,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // 添加文字
         currentResponseDiv.textContent += data.text;
+        console.log(currentResponseDiv)
         scrollToBottom();
     });
     
+    console.log("聊天訊息容器:", chatMessages);
+    console.log("打字指示器:", typingIndicator);
+
+
+
     // 接收完成信號
     socket.on('chat_response_complete', () => {
         // 隱藏打字指示器
@@ -84,8 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 添加消息到聊天區域
     function addMessage(text, className) {
+        console.log("添加訊息:", text, className);
         const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${className}`;
+        messageDiv.className = `chat-message ${className}`;
         messageDiv.textContent = text;
         chatMessages.insertBefore(messageDiv, typingIndicator);
         scrollToBottom();
