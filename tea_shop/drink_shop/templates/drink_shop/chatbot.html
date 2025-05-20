@@ -1,0 +1,20 @@
+{% extends 'drink_shop/base.html' %}
+{% load static %}
+
+{% block title %}智能客服 - 茶香飲品{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <h1>茶香飲品智能客服</h1>
+    <div id="chat-messages"></div>
+    <div class="input-area">
+        <input id="message-input" type="text" placeholder="請輸入您的問題...">
+        <button id="send-button">發送</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script src="{% static 'drink_shop/js/chatbot.js' %}"></script>
+{% endblock %}

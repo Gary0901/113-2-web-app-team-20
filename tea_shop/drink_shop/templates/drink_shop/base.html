@@ -25,13 +25,79 @@
     </style>
     {% block extra_css %}{% endblock %}
 </head>
+<!-- 聊天客服視窗 -->
+<link rel="stylesheet" href="{% static 'drink_shop/css/chatbot.css' %}">
+<div class="chat-widget">
+    <div class="chat-icon" id="chat-icon">
+        <img src="{% static 'drink_shop/images/chat-icon.jpg' %}" alt="客服" onerror="this.src='data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 viewBox%3D%220 0 24 24%22%3E%3Cpath fill%3D%22white%22 d%3D%22M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-14h2v6h-2zm0 8h2v2h-2z%22%2F%3E%3C%2Fsvg%3E'">
+    </div>
+    <div class="chat-window" id="chat-window">
+        <div class="chat-header">
+            <h3>茶香飲品智能客服</h3>
+            <span class="close-chat" id="close-chat">&times;</span>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">您好！我是茶香飲品的智能客服，有什麼可以幫您的嗎？</div>
+            <div class="typing-indicator" id="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="message-input" placeholder="請輸入您的問題...">
+            <button id="send-button">發送</button>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script src="{% static 'drink_shop/js/chatbot.js' %}"></script>
+<!-- 添加檢查登入狀態的 JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const memberNav = document.getElementById('member-nav');
+        const loggedMemberNav = document.getElementById('logged-member-nav');
+        const navLogout = document.getElementById('nav-logout');
+        
+        // 檢查是否已登入
+        const accessToken = localStorage.getItem('access_token');
+        if (accessToken) {
+            memberNav.style.display = 'none';
+            loggedMemberNav.style.display = 'inline';
+        } else {
+            memberNav.style.display = 'inline';
+            loggedMemberNav.style.display = 'none';
+        }
+        
+        // 導航欄登出按鈕
+        if (navLogout) {
+            navLogout.addEventListener('click', function(e) {
+                e.preventDefault();
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                alert('已成功登出！');
+                window.location.href = "{% url 'drink_shop:home' %}";
+            });
+        }
+    });
+</script>
 <body>
     <!-- 導航區 -->
     <nav>
         <a href="#about">關於我們</a> |
         <a href="#menu">飲品菜單</a> |
         <a href="#order">線上訂購</a> |
+        <a href="{% url 'drink_shop:comments' %}">評論區</a> |  <!-- 新增這一行 -->
         <a href="#contact">聯絡資訊</a>
+        <span id="member-nav">
+            <a href="{% url 'drink_shop:login' %}">會員登入</a> |
+            <a href="{% url 'drink_shop:register' %}">註冊</a>
+        </span>
+        <span id="logged-member-nav" style="display: none;">
+            <a href="{% url 'drink_shop:member_center' %}">會員中心</a> |
+            <a href="#" id="nav-logout">登出</a>
+        </span>
+
         {% if is_open %}
             <span class="shop-status open">營業中</span>
         {% else %}

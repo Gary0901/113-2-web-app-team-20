@@ -1,0 +1,170 @@
+/* 聊天視窗容器 */
+.chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    font-family: Arial, sans-serif;
+}
+
+/* 聊天圖標 */
+.chat-icon {
+    width: 100px;
+    height: 100px;
+    background-color: #DFFFDF;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s;
+}
+
+.chat-icon:hover {
+    background-color: #c8f5c8;
+    transform: scale(1.05);
+}
+
+.chat-icon img {
+    width: 35px;
+    height: 35px;
+}
+
+/* 聊天視窗 */
+.chat-window {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    width: 300px;
+    height: 400px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-window.active {
+    display: flex;
+}
+
+/* 聊天視窗頭部 */
+.chat-header {
+    background: #DFFFDF;
+    color: #333;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.close-chat {
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* 消息區域 */
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 消息氣泡 */
+.message {
+    max-width: 80%;
+    padding: 8px 12px;
+    margin-bottom: 10px;
+    border-radius: 15px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.bot-message {
+    background: #f1f0f0;
+    color: #333;
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+}
+
+.user-message {
+    background: #DFFFDF;
+    color: #333;
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+}
+
+/* 輸入區域 */
+.chat-input {
+    display: flex;
+    padding: 10px;
+    background: #f5f5f5;
+    border-top: 1px solid #ddd;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+}
+
+.chat-input button {
+    margin-left: 10px;
+    padding: 8px 15px;
+    background: #DFFFDF; /* 更改為指定的顏色 */
+    color: #333; /* 因為背景較淺，文字顏色改為深色 */
+    border: 1px solid #c8f5c8; /* 添加邊框以增加對比度 */
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.chat-input button:hover {
+    background: #c8f5c8; /* 滑鼠懸停時的顏色，稍微暗一點 */
+}
+
+/* 打字效果 */
+.typing-indicator {
+    display: none;
+    align-self: flex-start;
+    background: #f1f0f0;
+    padding: 8px 12px;
+    border-radius: 15px;
+    border-bottom-left-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.typing-indicator span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #999;
+    border-radius: 50%;
+    margin-right: 3px;
+    animation: typing 1s infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+    margin-right: 0;
+}
+
+@keyframes typing {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}

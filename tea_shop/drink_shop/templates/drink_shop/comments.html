@@ -1,0 +1,289 @@
+{% extends 'drink_shop/base.html' %}
+{% load static %}
+{% load comment_extras %}
+
+{% block title %}飲品評論區 - 茶香飲品{% endblock %}
+
+{% block content %}
+<header>
+    <h1>飲品評論區</h1>
+    <p>分享您對我們飲品的意見與感受</p>
+</header>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+        <div class="message {% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% else %}info{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<section>
+    <!-- 評論表單 -->
+    <h2>發表評論</h2>
+    <form name="commentForm" action="{% url 'drink_shop:post_comment' %}" method="POST">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ comment_form.nickname.id_for_label }}">{{ comment_form.nickname.label }}</label>
+            {{ comment_form.nickname }}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ comment_form.drink.id_for_label }}">{{ comment_form.drink.label }}</label>
+            {{ comment_form.drink }}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ comment_form.rating.id_for_label }}">{{ comment_form.rating.label }}</label>
+            {{ comment_form.rating }}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ comment_form.message.id_for_label }}">{{ comment_form.message.label }}</label>
+            {{ comment_form.message }}
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ comment_form.del_pass.id_for_label }}">{{ comment_form.del_pass.label }}</label>
+            {{ comment_form.del_pass }}
+            <small style="font-size: 0.85em; color: #666;">設定密碼後，您可以用此密碼刪除評論</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="{{ comment_form.captcha.id_for_label }}">{{ comment_form.captcha.label }}</label>
+            {{ comment_form.captcha }}
+        </div>
+        
+        <div class="button-group">
+            <button type="submit" class="btn-submit">發表評論</button>
+            <button type="reset" class="btn-reset">清除重填</button>
+        </div>
+    </form>
+</section>
+
+<!-- 評論列表 -->
+<section>
+    <h2>所有評論</h2>
+    
+    {% if comments %}
+        <div class="drink-gallery">
+            {% for comment in comments %}
+            <div class="comment-item">
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <img src="{% static 'drink_shop/images/' %}{{ comment.drink }}.jpg" alt="{{ comment.get_drink_display }}" class="comment-drink-image">
+                        <div class="comment-info">
+                            <h4>{{ comment.nickname }}</h4>
+                            <div class="comment-meta">
+                                <span class="drink-name">{{ comment.get_drink_display }}</span>
+                                <span class="comment-date">{{ comment.pub_time|date:"Y/m/d H:i" }}</span>
+                            </div>
+                            <div class="rating">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= comment.rating %}
+                                        <span class="star filled">★</span>
+                                    {% else %}
+                                        <span class="star">☆</span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comment-body">
+                        {{ comment.message|linebreaks }}
+                    </div>
+                    <div class="comment-footer">
+                        <span class="delete-icon" onclick="deleteComment('{{ comment.id }}')">刪除</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center; padding: 30px; color: #666;">目前還沒有評論，成為第一個留下評論的人吧！</p>
+    {% endif %}
+</section>
+
+<div id="deleteModal" class="overlay">
+    <div class="summary-container">
+        <span class="close">&times;</span>
+        <div class="order-summary">
+            <h3>刪除評論</h3>
+            <p>請輸入刪除密碼：</p>
+            <form id="deleteForm" method="GET">
+                <div class="form-group">
+                    <input type="password" id="deletePassword" name="del_pass" required>
+                </div>
+                <div class="summary-actions">
+                    <button type="submit" class="btn-submit">確認刪除</button>
+                    <button type="button" class="btn-reset" id="cancelDelete">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* 評論項目樣式 */
+    .comment-item {
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    
+    .comment-content {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border-left: 4px solid #8b5a2b;
+    }
+    
+    .comment-header {
+        display: flex;
+        align-items: flex-start;
+        padding: 15px;
+        background-color: #f5e6d3;
+    }
+    
+    .comment-drink-image {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        object-fit: cover;
+        margin-right: 15px;
+    }
+    
+    .comment-info {
+        flex: 1;
+    }
+    
+    .comment-info h4 {
+        margin: 0 0 5px 0;
+        color: #8b5a2b;
+    }
+    
+    .comment-meta {
+        display: flex;
+        justify-content: space-between;
+        color: #666;
+        font-size: 0.85em;
+        margin-bottom: 5px;
+    }
+    
+    .comment-body {
+        padding: 15px;
+        background-color: white;
+    }
+    
+    .comment-footer {
+        padding: 10px 15px;
+        background-color: #f9f9f9;
+        text-align: right;
+        border-top: 1px solid #eee;
+    }
+    
+    .delete-icon {
+        cursor: pointer;
+        color: #8b5a2b;
+        font-size: 0.9em;
+    }
+    
+    .delete-icon:hover {
+        text-decoration: underline;
+    }
+    
+    .rating {
+        margin-top: 5px;
+    }
+    
+    .star {
+        color: #ccc;
+        font-size: 18px;
+    }
+    
+    .star.filled {
+        color: #ca8b42;
+    }
+
+    /* 適配您的網站風格的響應式設計 */
+    @media (max-width: 768px) {
+        .drink-gallery {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .drink-gallery {
+            grid-template-columns: 1fr;
+        }
+        
+        .comment-header {
+            flex-direction: column;
+        }
+        
+        .comment-drink-image {
+            margin-bottom: 10px;
+            margin-right: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // 用於刪除評論的JavaScript
+    let currentCommentId = null;
+    
+    function deleteComment(commentId) {
+        currentCommentId = commentId;
+        document.getElementById('deleteModal').style.display = 'block';
+        document.getElementById('deletePassword').value = '';
+        document.getElementById('deleteForm').action = '#';  // 重置表單提交地址
+    }
+    
+    // 綁定模態框按鈕
+    document.addEventListener('DOMContentLoaded', function() {
+        // 確保模態框一開始是隱藏的
+        const modal = document.getElementById('deleteModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+        
+        const closeBtn = document.querySelector('.close');
+        const cancelBtn = document.getElementById('cancelDelete');
+        
+        if (closeBtn) {
+            closeBtn.onclick = function() {
+                modal.style.display = 'none';
+            }
+        }
+        
+        if (cancelBtn) {
+            cancelBtn.onclick = function() {
+                modal.style.display = 'none';
+            }
+        }
+        
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // 提交刪除表單
+        const deleteForm = document.getElementById('deleteForm');
+        if (deleteForm) {
+            deleteForm.onsubmit = function(e) {
+                e.preventDefault();
+                const password = document.getElementById('deletePassword').value;
+                window.location.href = `/delete_comment/${currentCommentId}/${password}/`;
+            }
+        }
+    });
+</script>
+{% endblock %}

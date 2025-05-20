@@ -117,11 +117,37 @@ function showOrderSummary(form) {
 
 // 確認訂單
 function submitOrder() {
-    // 在實際的應用中，這裡會發送表單數據到後端
-    alert('訂單已成功提交！我們會盡快處理您的訂單。');
+    // 檢查是否有會員 token
+    const accessToken = localStorage.getItem('access_token');
     
-    // 這裡可以使用Django的表單處理提交
-    document.getElementById('orderForm').submit();
+    // 原有的表單提交
+    const form = document.getElementById('orderForm');
+    
+    // 如果已登入會員，添加 token 標頭
+    if (accessToken) {
+        // 使用 fetch API 提交表單
+        const formData = new FormData(form);
+        
+        fetch(form.action, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`
+            },
+            body: formData
+        })
+        .then(response => {
+            if (response.redirected) {
+                window.location.href = response.url;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('訂單提交過程中發生錯誤，請稍後再試。');
+        });
+    } else {
+        // 非會員直接提交表單
+        form.submit();
+    }
     
     // 清除摘要和遮罩
     closeOrderSummary();

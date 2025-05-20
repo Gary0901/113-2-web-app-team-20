@@ -1,0 +1,235 @@
+{% extends 'drink_shop/base.html' %}
+{% load static %}
+
+{% block title %}會員中心 - 茶香飲品{% endblock %}
+
+{% block content %}
+<div class="member-container">
+    <h1>會員中心</h1>
+    <div id="auth-message" class="message"></div>
+    
+    <div id="memberInfo" class="member-info" style="display: none;">
+        <div class="member-card">
+            <h2 id="welcome-message">歡迎回來</h2>
+            <div class="member-details">
+                <p><strong>用戶名：</strong> <span id="member-username"></span></p>
+                <p><strong>電子郵件：</strong> <span id="member-email"></span></p>
+                <p><strong>手機號碼：</strong> <span id="member-phone"></span></p>
+                <p><strong>會員等級：</strong> <span id="member-level"></span></p>
+                <p><strong>積分：</strong> <span id="member-points"></span></p>
+                <p><strong>註冊時間：</strong> <span id="member-created"></span></p>
+            </div>
+        </div>
+        
+        <div class="member-orders">
+            <h2>我的訂單</h2>
+            <div id="orders-list"></div>
+        </div>
+        
+        <button id="logout-btn" class="btn-reset">登出</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const memberInfo = document.getElementById('memberInfo');
+    const authMessage = document.getElementById('auth-message');
+    const logoutBtn = document.getElementById('logout-btn');
+    
+    // 檢查是否有 token
+    const accessToken = localStorage.getItem('access_token');
+    if (!accessToken) {
+        authMessage.className = "message error";
+        authMessage.textContent = "請先登入以訪問會員中心";
+        setTimeout(() => {
+            window.location.href = "{% url 'drink_shop:login' %}";
+        }, 2000);
+        return;
+    }
+    
+    // 獲取會員資料
+    fetchMemberInfo();
+    
+    // 獲取訂單歷史
+    fetchMemberOrders();
+    
+    // 登出功能
+    logoutBtn.addEventListener('click', function() {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+        authMessage.className = "message success";
+        authMessage.textContent = "已成功登出！即將跳轉到首頁...";
+        memberInfo.style.display = "none";
+        setTimeout(() => {
+            window.location.href = "{% url 'drink_shop:home' %}";
+        }, 1000);
+    });
+    
+    // 獲取會員資料函數
+    function fetchMemberInfo() {
+        fetch('/api/member/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.status === 401) {
+                // Token 過期，嘗試刷新
+                return refreshToken();
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.message && data.message.includes("會員資料不存在")) {
+                authMessage.className = "message error";
+                authMessage.textContent = data.message;
+                return;
+            }
+            
+            // 顯示會員資料
+            document.getElementById('member-username').textContent = data.user.username;
+            document.getElementById('member-email').textContent = data.user.email;
+            document.getElementById('member-phone').textContent = data.phone;
+            document.getElementById('member-level').textContent = getLevelDisplay(data.level);
+            document.getElementById('member-points').textContent = data.points;
+            document.getElementById('member-created').textContent = formatDate(data.created_at);
+            document.getElementById('welcome-message').textContent = `歡迎回來，${data.user.username}！`;
+            
+            memberInfo.style.display = "block";
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            authMessage.className = "message error";
+            authMessage.textContent = "獲取會員資料失敗，請稍後再試。";
+        });
+    }
+    
+    // 獲取訂單歷史函數
+    function fetchMemberOrders() {
+        fetch('/api/member/orders/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.status === 401) {
+                return refreshToken().then(() => fetchMemberOrders());
+            }
+            return response.json();
+        })
+        .then(orders => {
+            const ordersList = document.getElementById('orders-list');
+            
+            if (orders.length === 0) {
+                ordersList.innerHTML = '<p>您目前沒有訂單記錄</p>';
+                return;
+            }
+            
+            let ordersHTML = '<div class="orders-table">';
+            ordersHTML += `
+                <div class="order-header">
+                    <div class="order-cell">訂單編號</div>
+                    <div class="order-cell">飲品</div>
+                    <div class="order-cell">杯型</div>
+                    <div class="order-cell">下單時間</div>
+                    <div class="order-cell">狀態</div>
+                </div>
+            `;
+            
+            orders.forEach(order => {
+                ordersHTML += `
+                    <div class="order-row">
+                        <div class="order-cell"><a href="/order/${order.id}/">${order.id.substring(0, 8)}...</a></div>
+                        <div class="order-cell">${getOrderDrinkDisplay(order.drink)}</div>
+                        <div class="order-cell">${order.size === 'large' ? '大杯' : '中杯'}</div>
+                        <div class="order-cell">${formatDate(order.created_at)}</div>
+                        <div class="order-cell">${getOrderStatusDisplay(order.status)}</div>
+                    </div>
+                `;
+            });
+            
+            ordersHTML += '</div>';
+            ordersList.innerHTML = ordersHTML;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('orders-list').innerHTML = '<p>獲取訂單失敗，請稍後再試。</p>';
+        });
+    }
+    
+    // 刷新 Token 函數
+    function refreshToken() {
+        const refreshToken = localStorage.getItem('refresh_token');
+        
+        return fetch('/api/token/refresh/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ refresh: refreshToken })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.access) {
+                localStorage.setItem('access_token', data.access);
+                // 使用新的 token 重新獲取資料
+                return fetchMemberInfo();
+            } else {
+                // 刷新失敗，需要重新登入
+                authMessage.className = "message error";
+                authMessage.textContent = "登入已過期，請重新登入";
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                setTimeout(() => {
+                    window.location.href = "{% url 'drink_shop:login' %}";
+                }, 2000);
+                throw new Error('Refresh token failed');
+            }
+        });
+    }
+    
+    // 輔助函數
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleString('zh-TW');
+    }
+    
+    function getLevelDisplay(level) {
+        const levels = {
+            'bronze': '銅卡會員',
+            'silver': '銀卡會員',
+            'gold': '金卡會員'
+        };
+        return levels[level] || level;
+    }
+    
+    function getOrderStatusDisplay(status) {
+        const statusMap = {
+            'pending': '待處理',
+            'preparing': '製作中',
+            'ready': '待取',
+            'completed': '已完成'
+        };
+        return statusMap[status] || status;
+    }
+    
+    function getOrderDrinkDisplay(drink) {
+        const drinkMap = {
+            'bubble-tea': '珍珠奶茶',
+            'mango-green-tea': '芒果綠茶',
+            'milk-tea': '鮮奶茶',
+            'fruit-tea': '繽紛水果茶',
+            'matcha-latte': '抹茶拿鐵',
+            'lemon-winter-melon': '檸檬冬瓜茶'
+        };
+        return drinkMap[drink] || drink;
+    }
+});
+</script>
+{% endblock %}

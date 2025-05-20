@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.db import models
 import uuid
 
 class Order(models.Model):
@@ -47,6 +49,15 @@ class Order(models.Model):
     ]
     status = models.CharField('訂單狀態', max_length=20, choices=STATUS_CHOICES, default='pending')
     
+    member = models.ForeignKey(
+        'Member', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='orders',
+        verbose_name='會員'
+    )
+
     def __str__(self):
         """提供訂單的字符串表示"""
         return f'{self.name} - {self.get_drink_display()} ({self.created_at.strftime("%Y-%m-%d %H:%M")})'
@@ -106,3 +117,87 @@ class Order(models.Model):
         verbose_name = '訂單'
         verbose_name_plural = '訂單'
         ordering = ['-created_at']  # 按下單時間倒序排列
+    
+
+
+class Member(models.Model):
+    """會員模型"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='member')
+    phone = models.CharField('手機號碼', max_length=20)
+    points = models.IntegerField('積分', default=0)
+    
+    # 可選：會員等級
+    LEVEL_CHOICES = [
+        ('bronze', '銅卡會員'),
+        ('silver', '銀卡會員'),
+        ('gold', '金卡會員'),
+    ]
+    level = models.CharField('會員等級', max_length=10, choices=LEVEL_CHOICES, default='bronze')
+    
+    # 會員註冊時間
+    created_at = models.DateTimeField('註冊時間', auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.get_level_display()}"
+    
+    def update_level(self):
+        """根據積分更新會員等級"""
+        if self.points >= 500:
+            self.level = 'gold'
+        elif self.points >= 200:
+            self.level = 'silver'
+        else:
+            self.level = 'bronze'
+        self.save()
+        
+class Comment(models.Model):
+    """評論模型"""
+    # 評論ID
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    
+    # 評論者資訊
+    nickname = models.CharField('暱稱', max_length=50, default='匿名用戶')
+    
+    # 評論內容
+    message = models.TextField('評論內容', null=False)
+    
+    # 刪除密碼
+    del_pass = models.CharField('刪除密碼', max_length=50)
+    
+    # 評論時間
+    pub_time = models.DateTimeField('發布時間', auto_now_add=True)
+    
+    # 評論狀態
+    enabled = models.BooleanField('是否顯示', default=False)
+    
+    # 相關聯的飲品
+    drink = models.CharField('飲品', max_length=50, choices=Order.DRINK_CHOICES)
+    
+    # 評分 (1-5星)
+    RATING_CHOICES = [
+        (1, '1星'),
+        (2, '2星'),
+        (3, '3星'),
+        (4, '4星'),
+        (5, '5星'),
+    ]
+    rating = models.IntegerField('評分', choices=RATING_CHOICES, default=5)
+    
+    # 關聯會員 (可選)
+    member = models.ForeignKey(
+        'Member', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='comments',
+        verbose_name='會員'
+    )
+    
+    def __str__(self):
+        """提供評論的字符串表示"""
+        return f'{self.nickname} - {self.get_drink_display()} ({self.pub_time.strftime("%Y-%m-%d %H:%M")})'
+    
+    class Meta:
+        verbose_name = '評論'
+        verbose_name_plural = '評論'
+        ordering = ['-pub_time']  # 按評論時間倒序排列

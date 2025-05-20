@@ -1,0 +1,198 @@
+{% extends 'drink_shop/base.html' %}
+{% load static %}
+
+{% block title %}會員登入 - 茶香飲品{% endblock %}
+
+{% block extra_head %}
+<style>
+/* 會員登入表單專用樣式 */
+.login-container {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: #f5e6d3;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.login-container h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #8b5a2b;
+    font-size: 2em;
+    border-bottom: 2px solid #8b5a2b;
+    padding-bottom: 10px;
+}
+
+.login-container .form-group {
+    margin-bottom: 20px;
+}
+
+.login-container .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #8b5a2b;
+    font-size: 16px;
+}
+
+.login-container .form-group input[type="text"],
+.login-container .form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: #fff;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.login-container .form-group input:focus {
+    border-color: #8b5a2b;
+    box-shadow: 0 0 0 3px rgba(139, 90, 43, 0.25);
+    outline: none;
+}
+
+.login-container .btn-submit {
+    width: 100%;
+    background-color: #8b5a2b;
+    color: white;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 15px;
+}
+
+.login-container .btn-submit:hover {
+    background-color: #6d472b;
+}
+
+.login-container p {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 15px;
+}
+
+.login-container a {
+    color: #ca8b42;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.login-container a:hover {
+    text-decoration: underline;
+}
+
+.login-container .message {
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+    display: none;
+}
+
+.login-container .message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    display: block;
+}
+
+.login-container .message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    display: block;
+}
+
+.login-container .message.info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+    display: block;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h1>會員登入</h1>
+    <div id="login-message" class="message"></div>
+    
+    <form id="loginForm" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">用戶名：</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="password">密碼：</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        
+        <button type="submit" class="btn-submit">登入</button>
+        <p>還沒有帳號？<a href="{% url 'drink_shop:register' %}">立即註冊</a></p>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const messageDiv = document.getElementById('login-message');
+    
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value
+        };
+        
+        // 顯示載入中訊息
+        messageDiv.className = "message info";
+        messageDiv.textContent = "登入中...";
+        messageDiv.style.display = "block";
+        
+        fetch('/api/token/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.access) {
+                // 儲存 token
+                localStorage.setItem('access_token', data.access);
+                localStorage.setItem('refresh_token', data.refresh);
+                
+                messageDiv.className = "message success";
+                messageDiv.textContent = "登入成功！即將跳轉到會員中心...";
+                
+                setTimeout(() => {
+                    window.location.href = "{% url 'drink_shop:member_center' %}";
+                }, 1000);
+            } else {
+                messageDiv.className = "message error";
+                messageDiv.textContent = "用戶名或密碼錯誤";
+            }
+        })
+        .catch(error => {
+            messageDiv.className = "message error";
+            messageDiv.textContent = "登入過程發生錯誤，請稍後再試。";
+            console.error('Error:', error);
+        });
+    });
+});
+</script>
+{% endblock %}

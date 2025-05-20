@@ -648,3 +648,180 @@ address {
     background-color: #f44336;
     color: white;
 }
+
+/* 會員登入和註冊 */
+/* 會員登入和註冊表單樣式 */
+.login-container,
+.register-container {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 30px;
+    background-color: #f5e6d3; /* 與整體茶色主題一致 */
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.login-container h1,
+.register-container h1 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #8b5a2b; /* 與網站標題顏色一致 */
+    font-size: 2em;
+    border-bottom: 2px solid #8b5a2b;
+    padding-bottom: 10px;
+}
+
+/* 表單群組統一樣式 */
+.form-group {
+    margin-bottom: 20px;
+}
+
+/* 標籤統一樣式 */
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #8b5a2b;
+    font-size: 16px;
+}
+
+/* 輸入框統一樣式 */
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    background-color: #fff;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #8b5a2b;
+    box-shadow: 0 0 0 3px rgba(139, 90, 43, 0.25);
+    outline: none;
+}
+
+/* 按鈕統一樣式 */
+.btn-submit,
+button[type="submit"] {
+    width: 100%;
+    background-color: #8b5a2b;
+    color: white;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 15px;
+}
+
+.btn-submit:hover,
+button[type="submit"]:hover {
+    background-color: #6d472b;
+}
+
+/* 帳號連結樣式 */
+.login-container p,
+.register-container p {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 15px;
+}
+
+.login-container a,
+.register-container a {
+    color: #ca8b42;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.login-container a:hover,
+.register-container a:hover {
+    text-decoration: underline;
+}
+
+/* 訊息樣式優化 */
+.message {
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+    display: none;
+}
+
+.message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    display: block;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    display: block;
+}
+
+/* 會員中心 */
+.member-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.member-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.member-card {
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.member-details {
+    margin-top: 15px;
+}
+
+.member-orders {
+    margin-top: 20px;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.order-header {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+    display: flex;
+}
+
+.order-row {
+    border-bottom: 1px solid #ddd;
+    display: flex;
+}
+
+.order-row:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.order-cell {
+    padding: 12px;
+    flex: 1;
+    text-align: center;
+}

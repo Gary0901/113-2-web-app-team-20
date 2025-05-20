@@ -20,4 +20,5 @@ from django.contrib import admin
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('drink_shop.urls')),
+    path('captcha/', include('captcha.urls')),  # 新增這一行
 ]
